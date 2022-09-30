@@ -1,0 +1,7 @@
+parameters:
+  oxid_esales.theme.admin.name: 'admin_smarty'
+  oxid_esales.templating.engine_template_extension: 'tpl'
+
+services:
+  _defaults:
+    autowire: true

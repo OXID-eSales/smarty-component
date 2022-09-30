@@ -1,0 +1,22 @@
+{
+  "name": "oxid-esales/smarty-component",
+  "description": "The component supports smarty template engine.",
+  "type": "oxideshop-component",
+  "keywords": ["oxid", "component", "eShop"],
+  "homepage": "https://www.oxid-esales.com",
+  "license": [
+    "proprietary"
+  ],
+  "require": {
+    "php": ">=8.0",
+    "smarty/smarty": "^v2.6.31"
+  },
+  "autoload": {
+    "psr-4": {
+      "OxidEsales\\Smarty\\": "src",
+      "OxidEsales\\Smarty\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
