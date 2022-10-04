@@ -5,3 +5,120 @@ parameters:
 services:
   _defaults:
     autowire: true
+
+  OxidEsales\Eshop\Core\Config:
+    factory: ['OxidEsales\Eshop\Core\Registry', 'getConfig']
+  OxidEsales\Eshop\Core\UtilsView:
+    factory: ['OxidEsales\Eshop\Core\Registry', 'getUtilsView']
+  OxidEsales\Smarty\SmartyContextInterface:
+    class: OxidEsales\Smarty\SmartyContext
+    arguments:
+      $activeAdminTheme: '%oxid_esales.theme.admin.name%'
+  OxidEsales\Smarty\SmartyBuilderInterface:
+    class: OxidEsales\Smarty\SmartyBuilder
+    arguments:
+      $filesystem: '@oxid_esales.symfony.file_system'
+  OxidEsales\Smarty\Configuration\SmartyConfigurationFactoryInterface:
+    class: OxidEsales\Smarty\Configuration\SmartyConfigurationFactory
+  OxidEsales\Smarty\Configuration\SmartySettingsDataProviderInterface:
+    class: OxidEsales\Smarty\Configuration\SmartySettingsDataProvider
+  OxidEsales\Smarty\Configuration\SmartySecuritySettingsDataProviderInterface:
+    class: OxidEsales\Smarty\Configuration\SmartySecuritySettingsDataProvider
+  OxidEsales\Smarty\Configuration\SmartyResourcesDataProviderInterface:
+    class: OxidEsales\Smarty\Configuration\SmartyResourcesDataProvider
+  OxidEsales\Smarty\Configuration\SmartyPrefiltersDataProviderInterface:
+    class: OxidEsales\Smarty\Configuration\SmartyPrefiltersDataProvider
+  OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface:
+    class: OxidEsales\Smarty\Configuration\SmartyPluginsDataProvider
+  OxidEsales\Smarty\Configuration\SmartyConfigurationInterface:
+    class: OxidEsales\Smarty\Configuration\SmartyConfiguration
+    factory: ['@OxidEsales\Smarty\Configuration\SmartyConfigurationFactoryInterface', 'getConfiguration']
+  OxidEsales\Smarty\Bridge\SmartyEngineBridgeInterface:
+    class: OxidEsales\Smarty\Bridge\SmartyEngineBridge
+  smarty.smarty_engine_factory:
+    class: OxidEsales\Smarty\SmartyEngineFactory
+  OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterface:
+    class: OxidEsales\Smarty\SmartyEngine
+    factory: ['@smarty.smarty_engine_factory', 'getTemplateEngine']
+  OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererBridgeInterface:
+    class: OxidEsales\Smarty\Bridge\SmartyTemplateRendererBridge
+    public: true
+  OxidEsales\Smarty\Extension\SmartyTemplateHandlerInterface:
+    class: OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler
+  OxidEsales\Smarty\Extension\ResourcePluginInterface:
+    class: OxidEsales\Smarty\Extension\CacheResourcePlugin
+  OxidEsales\Smarty\Module\Plugin\SmartyPluginDaoInterface:
+    class: OxidEsales\Smarty\Module\Plugin\SmartyPluginDao
+  OxidEsales\Smarty\Module\Plugin\ModuleSmartyPluginsDataProviderInterface:
+    class: OxidEsales\Smarty\Module\Plugin\ModuleSmartyPluginsDataProvider
+    decorates: OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface
+    decoration_priority: 100
+    arguments:
+      - '@OxidEsales\Smarty\Module\Plugin\ModuleSmartyPluginsDataProviderInterface.inner'
+      - '@OxidEsales\Smarty\Module\Plugin\SmartyPluginDaoInterface'
+      - '@OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface'
+      - '@OxidEsales\EshopCommunity\Internal\Framework\Module\Path\ModulePathResolverInterface'
+  OxidEsales\Smarty\SystemRequirements\MissingTemplateBlocksCheckerInterface:
+    class: OxidEsales\Smarty\SystemRequirements\MissingTemplateBlocksChecker
+    public: true
+    arguments:
+      - '@OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionDaoInterface'
+      - '@OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface'
+      - '@oxid_esales.templating.admin.template.loader'
+      - '@oxid_esales.templating.frontend.template.loader'
+      - '@OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface'
+
+  OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionDaoInterface:
+    class: OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionDao
+
+  OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionServiceInterface:
+    class: OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionService
+    public: true
+
+  OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockLoaderInterface:
+    class: OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockLoader
+    arguments:
+      $filesystem: '@oxid_esales.symfony.file_system'
+
+  oxid_esales.smarty.module.setup.template_block_module_setting_handler:
+    class: OxidEsales\Smarty\Module\Setup\Handler\TemplateBlockModuleSettingHandler
+
+  oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler:
+    class: OxidEsales\Smarty\Module\Setup\Handler\ShopConfigurationSmartyPluginDirectoryHandler
+
+  OxidEsales\Smarty\Module\Setup\Validator\SmartyPluginDirectoriesValidatorInterface:
+    class: OxidEsales\Smarty\Module\Setup\Validator\SmartyPluginDirectoriesValidator
+
+  oxid_esales.smarty.setup.eventsubscriber.install_smarty_extension_events_subscriber:
+    class: OxidEsales\Smarty\Module\Setup\EventSubscriber\InstallSmartyExtensionEventsSubscriber
+    arguments:
+      - '@OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ModuleConfigurationDaoInterface'
+      - '@oxid_esales.smarty.module.setup.template_block_module_setting_handler'
+      - '@oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler'
+    tags:
+      - { name: kernel.event_subscriber }
+
+  OxidEsales\Smarty\Module\MetaData\MetaDataDaoInterface:
+    class: OxidEsales\Smarty\Module\MetaData\MetaDataDao
+
+  OxidEsales\Smarty\Resolver\TemplateDirectoryResolverInterface:
+    class: OxidEsales\Smarty\Resolver\TemplateDirectoryResolver
+    arguments:
+      - !tagged oxid.template.file.locator
+    public: true
+
+  OxidEsales\Smarty\Resolver\ShopTemplateDirectoryResolver:
+    tags:
+      - { name: 'oxid.template.file.locator', priority: 100 }
+
+  oxid_esales.templating.frontend.template.loader:
+    class: OxidEsales\Smarty\Loader\TemplateLoader
+    public: true
+    arguments:
+      - '@OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\TemplateFileLocator'
+
+  oxid_esales.templating.admin.template.loader:
+    class: OxidEsales\Smarty\Loader\TemplateLoader
+    public: true
+    arguments:
+      - '@OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\AdminTemplateFileLocator'
