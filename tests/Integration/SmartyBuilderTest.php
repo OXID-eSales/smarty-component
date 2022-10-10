@@ -21,7 +21,8 @@ use Symfony\Component\Filesystem\Filesystem;
 class SmartyBuilderTest extends IntegrationTestCase
 {
     use ProphecyTrait;
-    private $debugMode;
+
+    private bool $debugMode;
 
     public function setup(): void
     {
@@ -37,11 +38,8 @@ class SmartyBuilderTest extends IntegrationTestCase
 
     /**
      * @dataProvider smartySettingsDataProvider
-     *
-     * @param bool  $securityMode
-     * @param array $smartySettings
      */
-    public function testSmartySettingsAreSetCorrect($securityMode, $smartySettings)
+    public function testSmartySettingsAreSetCorrect(bool $securityMode, array $smartySettings): void
     {
         $config = Registry::getConfig();
         $config->setConfigParam('blDemoShop', $securityMode);
@@ -69,7 +67,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     /**
      * @return array
      */
-    public function smartySettingsDataProvider()
+    public function smartySettingsDataProvider(): array
     {
         return [
             'security on' => [1, $this->getSmartySettingsWithSecurityOn()],
@@ -80,7 +78,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     private function getSmartySettingsWithSecurityOn(): array
     {
         $config = Registry::getConfig();
-        $templateDirectories = Registry::getUtilsView()->getTemplateDirs();
+        $templateDir = Registry::getConfig()->getTemplateDir();
         $shopId = $config->getShopId();
         return [
             'security' => true,
@@ -90,8 +88,8 @@ class SmartyBuilderTest extends IntegrationTestCase
             'caching' => false,
             'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
-            'compile_id' => md5(reset($templateDirectories) . '__' . $shopId),
-            'template_dir' => $templateDirectories,
+            'compile_id' => md5($templateDir . '__' . $shopId),
+            'template_dir' => $templateDir,
             'debugging' => false,
             'compile_check' => $config->getConfigParam('blCheckTemplates'),
             'security_settings' => [
@@ -134,7 +132,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     private function getSmartySettingsWithSecurityOff(): array
     {
         $config = Registry::getConfig();
-        $templateDirectories = Registry::getUtilsView()->getTemplateDirs();
+        $templateDir = Registry::getConfig()->getTemplateDir();
         $shopId = $config->getShopId();
         return [
             'security' => false,
@@ -144,15 +142,15 @@ class SmartyBuilderTest extends IntegrationTestCase
             'caching' => false,
             'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
-            'compile_id' => md5(reset($templateDirectories) . '__' . $shopId),
-            'template_dir' => $templateDirectories,
+            'compile_id' => md5($templateDir . '__' . $shopId),
+            'template_dir' => $templateDir,
             'debugging' => false,
             'compile_check' => $config->getConfigParam('blCheckTemplates'),
             'plugins_dir' => $this->getSmartyPlugins(),
         ];
     }
 
-    private function getSmartyPlugins()
+    private function getSmartyPlugins(): array
     {
         /** @var SmartyPluginsDataProviderInterface $pluginProvider */
         $pluginProvider = $this->get(SmartyPluginsDataProviderInterface::class);

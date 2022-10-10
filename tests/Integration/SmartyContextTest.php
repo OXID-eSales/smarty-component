@@ -11,9 +11,8 @@ namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\UtilsView;
-use OxidEsales\Smarty\SmartyContext;
 use OxidEsales\EshopCommunity\Tests\Unit\Internal\ContextStub;
+use OxidEsales\Smarty\SmartyContext;
 use PHPUnit\Framework\TestCase;
 
 class SmartyContextTest extends TestCase
@@ -38,11 +37,9 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('iDebug')
-            ->will($this->returnValue($configValue));
+            ->willReturn($configValue);
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame($debugMode, $smartyContext->getTemplateEngineDebugMode());
     }
 
@@ -64,15 +61,14 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('iDebug')
-            ->will($this->returnValue($configValue));
+            ->willReturn($configValue);
         $config->method('isAdmin')
-            ->will($this->returnValue($adminMode));
+            ->willReturn($adminMode);
 
 
         Registry::getConfig()->setConfigParam('iDebug', $configValue);
-        $utilsView = $this->getUtilsViewMock();
 
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame($result, $smartyContext->showTemplateNames());
     }
 
@@ -80,11 +76,9 @@ class SmartyContextTest extends TestCase
     {
         $config = $this->getConfigMock();
         $config->method('isDemoShop')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame(true, $smartyContext->getTemplateSecurityMode());
     }
 
@@ -93,11 +87,9 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('blCheckTemplates')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame(true, $smartyContext->getTemplateCompileCheckMode());
     }
 
@@ -106,13 +98,11 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('blCheckTemplates')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $config->method('isProductiveMode')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertFalse($smartyContext->getTemplateCompileCheckMode());
     }
 
@@ -121,11 +111,9 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('iSmartyPhpHandling')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame(1, $smartyContext->getTemplatePhpHandlingMode());
     }
 
@@ -133,14 +121,12 @@ class SmartyContextTest extends TestCase
     {
         $config = $this->getConfigMock();
         $config->method('isAdmin')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $config->method('getTemplatePath')
             ->with('testTemplate', false)
-            ->will($this->returnValue('templatePath'));
+            ->willReturn('templatePath');
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame('templatePath', $smartyContext->getTemplatePath('testTemplate'));
     }
 
@@ -150,46 +136,45 @@ class SmartyContextTest extends TestCase
         $context->setTemplateCacheDirectory('testCompileDir');
         $config = $this->getConfigMock();
 
-        $utilsView = $this->getUtilsViewMock();
-
-        $smartyContext = new SmartyContext($context, $config, $utilsView);
+        $smartyContext = new SmartyContext($context, $config, 'admin_smarty');
         $this->assertSame('testCompileDir', $smartyContext->getTemplateCompileDirectory());
     }
 
     public function testGetTemplateDirectories(): void
     {
         $config = $this->getConfigMock();
-        $utilsView = $this->getUtilsViewMock();
-        $utilsView->method('getTemplateDirs')
-            ->will($this->returnValue(['testTemplateDir']));
+        $config->method('getTemplateDir')
+            ->willReturn('testTemplateDir');
+        $config->method('isAdmin')
+            ->willReturn(false);
 
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $utilsView);
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertSame(['testTemplateDir'], $smartyContext->getTemplateDirectories());
     }
 
     public function testGetTemplateCompileId(): void
     {
-        $templateDirectories = ['testCompileDir'];
+        $templateDir = 'testCompileDir';
         $shopId = 1;
         $context = new ContextStub();
         $context->setCurrentShopId($shopId);
         $config = $this->getConfigMock();
-        $utilsView = $this->getUtilsViewMock();
-        $utilsView->method('getTemplateDirs')
-            ->will($this->returnValue($templateDirectories));
+        $config->method('getTemplateDir')
+            ->willReturn($templateDir);
+        $config->method('isAdmin')
+            ->willReturn(false);
 
-        $smartyContext = new SmartyContext($context, $config, $utilsView);
-        $this->assertSame(md5(reset($templateDirectories) . '__' . $shopId), $smartyContext->getTemplateCompileId());
+        $smartyContext = new SmartyContext($context, $config, 'admin_smarty');
+        $this->assertSame(md5($templateDir . '__' . $shopId), $smartyContext->getTemplateCompileId());
     }
 
     public function testGetSourcePath(): void
     {
         $config = $this->getConfigMock();
-        $utilsView = $this->getUtilsViewMock();
         $context = new ContextStub();
         $context->setSourcePath('testSourcePath');
 
-        $smartyContext = new SmartyContext($context, $config, $utilsView);
+        $smartyContext = new SmartyContext($context, $config, 'admin_smarty');
         $this->assertSame('testSourcePath', $smartyContext->getSourcePath());
     }
 
@@ -198,9 +183,9 @@ class SmartyContextTest extends TestCase
         $config = $this->getConfigMock();
         $config->method('getConfigParam')
             ->with('deactivateSmartyForCmsContent')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
-        $smartyContext = new SmartyContext(new ContextStub(), $config, $this->getUtilsViewMock());
+        $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
         $this->assertTrue($smartyContext->isSmartyForContentDeactivated());
     }
 
@@ -216,15 +201,4 @@ class SmartyContextTest extends TestCase
         return $configMock;
     }
 
-    /**
-     * @return UtilsView
-     */
-    private function getUtilsViewMock()
-    {
-        $utilsViewMock = $this
-            ->getMockBuilder(UtilsView::class)
-            ->getMock();
-
-        return $utilsViewMock;
-    }
 }

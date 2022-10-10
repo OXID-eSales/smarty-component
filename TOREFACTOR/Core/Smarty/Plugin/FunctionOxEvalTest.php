@@ -118,7 +118,7 @@ final class FunctionOxEvalTest extends UnitTestCase
 
     private function getTemplateDir(): string
     {
-        $templateDir = Registry::getUtilsView()->getTemplateDirs(false)[0];
+        $templateDir = Registry::getConfig()->getTemplateDir();
         /** @var Filesystem $filesystem */
         $filesystem = ContainerFactory::getInstance()->getContainer()->get('oxid_esales.symfony.file_system');
         if (!$filesystem->exists($templateDir)) {
