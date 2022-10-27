@@ -81,7 +81,7 @@ class MissingTemplateBlocksChecker implements MissingTemplateBlocksCheckerInterf
     {
         try {
             $templateLoader->findTemplate($name);
-        } catch (TemplateFileNotFoundException) {
+        } catch (TemplateFileNotFoundException $e) {
             return false;
         }
         return true;

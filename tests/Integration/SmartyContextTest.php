@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty;
+namespace OxidEsales\Smarty\Tests\Integration;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;

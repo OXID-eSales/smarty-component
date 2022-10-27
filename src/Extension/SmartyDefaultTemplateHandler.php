@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Extension;
 
-use OxidEsales\Smarty\SmartyContextInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\FileLocatorInterface;
 
 /**
  * Default Template Handler
@@ -18,7 +18,9 @@ use OxidEsales\Smarty\SmartyContextInterface;
  */
 class SmartyDefaultTemplateHandler implements SmartyTemplateHandlerInterface
 {
-    public function __construct(private SmartyContextInterface $context)
+    public function __construct(
+        private FileLocatorInterface $templateFileLocator
+    )
     {
     }
 
@@ -37,7 +39,7 @@ class SmartyDefaultTemplateHandler implements SmartyTemplateHandlerInterface
     {
         $fileLoaded = false;
         if ($resourceType === 'file' && !is_readable($resourceName)) {
-            $resourceName = $this->context->getTemplatePath($resourceName);
+            $resourceName = $this->templateFileLocator->locate($resourceName);
             $fileLoaded = $this->isFileLoadable($resourceName);
             if ($fileLoaded) {
                 $resourceContent = $smarty->_read_file($resourceName);

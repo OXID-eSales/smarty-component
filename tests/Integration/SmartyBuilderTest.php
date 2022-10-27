@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty;
+namespace OxidEsales\Smarty\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface;
@@ -22,12 +22,13 @@ class SmartyBuilderTest extends IntegrationTestCase
 {
     use ProphecyTrait;
 
-    private bool $debugMode;
+    private mixed $debugMode;
 
     public function setup(): void
     {
         parent::setUp();
         $this->debugMode = Registry::getConfig()->getConfigParam('iDebug');
+        new \Smarty(); // Initalize constants
     }
 
     public function tearDown(): void
@@ -39,7 +40,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     /**
      * @dataProvider smartySettingsDataProvider
      */
-    public function testSmartySettingsAreSetCorrect(bool $securityMode, array $smartySettings): void
+    public function testSmartySettingsAreSetCorrect(int $securityMode, array $smartySettings): void
     {
         $config = Registry::getConfig();
         $config->setConfigParam('blDemoShop', $securityMode);
@@ -89,7 +90,7 @@ class SmartyBuilderTest extends IntegrationTestCase
             'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'compile_id' => md5($templateDir . '__' . $shopId),
-            'template_dir' => $templateDir,
+            'template_dir' => [$templateDir],
             'debugging' => false,
             'compile_check' => $config->getConfigParam('blCheckTemplates'),
             'security_settings' => [
@@ -143,7 +144,7 @@ class SmartyBuilderTest extends IntegrationTestCase
             'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
             'compile_id' => md5($templateDir . '__' . $shopId),
-            'template_dir' => $templateDir,
+            'template_dir' => [$templateDir],
             'debugging' => false,
             'compile_check' => $config->getConfigParam('blCheckTemplates'),
             'plugins_dir' => $this->getSmartyPlugins(),

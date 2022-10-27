@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\Bridge;
+namespace OxidEsales\Smarty\Tests\Unit\Bridge;
 
 use OxidEsales\Smarty\Bridge\SmartyTemplateRendererBridge;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;

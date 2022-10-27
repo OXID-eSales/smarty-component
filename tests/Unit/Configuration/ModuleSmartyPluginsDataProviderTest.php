@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Path\ModulePathResolverInterface;
+use OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface;
 use OxidEsales\Smarty\Module\Plugin\ModuleSmartyPluginsDataProvider;
-use OxidEsales\Smarty\Configuration\SmartyPluginsDataProvider;
 use OxidEsales\Smarty\Module\Plugin\SmartyPluginDaoInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 
 class ModuleSmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
@@ -21,28 +20,15 @@ class ModuleSmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
     public function testGetPlugins()
     {
         $dataProvider = new ModuleSmartyPluginsDataProvider(
-            new SmartyPluginsDataProvider($this->getBasicContextMock()),
+            $this->getSmartyPluginsDataProviderMock(),
             $this->getSmartyPluginDaoMock(),
             $this->getContextMock(),
             $this->getModulePathResolver()
         );
 
-        $settings = ['shopDir/testModuleDir', 'testShopPath/Internal/Framework/Smarty/Plugin'];
+        $settings = ['shopDir/testModuleDir', 'Smarty/Component/Plugin'];
 
         $this->assertEquals($settings, $dataProvider->getPlugins());
-    }
-
-    private function getBasicContextMock(): BasicContextInterface
-    {
-        $contextMock = $this
-            ->getMockBuilder(BasicContextInterface::class)
-            ->getMock();
-
-        $contextMock
-            ->method('getCommunityEditionSourcePath')
-            ->willReturn('testShopPath');
-
-        return $contextMock;
     }
 
     private function getContextMock(): ContextInterface
@@ -71,16 +57,30 @@ class ModuleSmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
         return $mock;
     }
 
+
     private function getSmartyPluginDaoMock(): SmartyPluginDaoInterface
     {
-        $shopAdapterMock = $this
+        $mock = $this
             ->getMockBuilder(SmartyPluginDaoInterface::class)
             ->getMock();
 
-        $shopAdapterMock
+        $mock
             ->method('getPluginDirectories')
             ->willReturn(['testModule' => ['testModuleDir']]);
 
-        return $shopAdapterMock;
+        return $mock;
+    }
+
+    private function getSmartyPluginsDataProviderMock(): SmartyPluginsDataProviderInterface
+    {
+        $mock = $this
+            ->getMockBuilder(SmartyPluginsDataProviderInterface::class)
+            ->getMock();
+
+        $mock
+            ->method('getPlugins')
+            ->willReturn(['Smarty/Component/Plugin']);
+
+        return $mock;
     }
 }

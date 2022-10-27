@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Loader;
 
+use OxidEsales\Smarty\Exception\TemplateFileNotFoundException;
+
 /**
  * Interface TemplateLoaderInterface
  * @package OxidEsales\EshopCommunity\Internal\Framework\Templating\Loader
@@ -24,5 +26,8 @@ interface TemplateLoaderInterface
      */
     public function getContext($name): string;
 
+    /**
+     * @throws TemplateFileNotFoundException
+     */
     public function findTemplate($name): string;
 }

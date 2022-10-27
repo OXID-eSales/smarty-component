@@ -53,4 +53,7 @@ $aModule = array(
             'value' => 'default',
         ]
     ],
+    'templates' => [
+        'vendor1_controller_routing.tpl' => 'TestModule/views/tpl/vendor1_controller_routing.tpl'
+    ]
 );

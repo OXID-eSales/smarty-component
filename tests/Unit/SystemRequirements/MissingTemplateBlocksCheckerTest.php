@@ -1,19 +1,23 @@
 <?php
 
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\SystemRequirements;
+namespace OxidEsales\Smarty\Tests\Unit\SystemRequirements;
 
 
+use OxidEsales\EshopCommunity\Tests\ContainerTrait;
+use OxidEsales\Smarty\Exception\TemplateFileNotFoundException;
 use OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtension;
 use OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionDaoInterface;
 use OxidEsales\Smarty\SystemRequirements\MissingTemplateBlocksChecker;
-use OxidEsales\EshopCommunity\Internal\Framework\Templating\Loader\TemplateLoaderInterface;
+use OxidEsales\Smarty\Loader\TemplateLoaderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use PHPUnit\Framework\TestCase;
 
 class MissingTemplateBlocksCheckerTest extends TestCase
 {
+    use ContainerTrait;
+
     /**
      * @dataProvider dataProviderCollectMissingTemplateBlockExtensions
      */
@@ -101,10 +105,18 @@ class MissingTemplateBlocksCheckerTest extends TestCase
     {
         $templateLoader = $this->getMockBuilder(TemplateLoaderInterface::class)
             ->getMock();
-        $templateLoader->expects($this->any())
-            ->method('exists')
-            ->with('testTemplateName')
-            ->will($this->returnValue($templateExist));
+        if ($templateExist) {
+            $templateLoader->expects($this->any())
+                ->method('findTemplate')
+                ->with('testTemplateName')
+                ->will($this->returnValue($templateContent));
+        } else {
+            $templateLoader->expects($this->any())
+                ->method('findTemplate')
+                ->with('testTemplateName')
+                ->willThrowException($this->get(TemplateFileNotFoundException::class));
+        }
+
         $templateLoader->expects($this->any())
             ->method('getContext')
             ->will($this->returnValue($templateContent));

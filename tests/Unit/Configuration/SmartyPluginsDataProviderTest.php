@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartyPluginsDataProvider;
 use OxidEsales\Smarty\SmartyContextInterface;
@@ -17,25 +17,8 @@ class SmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetConfigurationWithSecuritySettingsOff()
     {
-        $contextMock = $this->getContextMock();
+        $settings = (new SmartyPluginsDataProvider())->getPlugins();
 
-        $dataProvider = new SmartyPluginsDataProvider($contextMock);
-
-        $settings = ['testShopPath/Internal/Framework/Smarty/Plugin'];
-
-        $this->assertEquals($settings, $dataProvider->getPlugins());
-    }
-
-    private function getContextMock(): BasicContextInterface
-    {
-        $contextMock = $this
-            ->getMockBuilder(BasicContextInterface::class)
-            ->getMock();
-
-        $contextMock
-            ->method('getCommunityEditionSourcePath')
-            ->willReturn('testShopPath');
-
-        return $contextMock;
+        $this->assertTrue(file_exists($settings[0] . DIRECTORY_SEPARATOR . 'function.oxcontent.php'));
     }
 }

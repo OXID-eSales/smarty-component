@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Smarty\Extension;
+namespace OxidEsales\Smarty\Tests\Unit\Extension;
 
 use OxidEsales\Smarty\Extension\CacheResourcePlugin;
 use OxidEsales\Smarty\SmartyContextInterface;

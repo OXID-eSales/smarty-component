@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartyPrefiltersDataProvider;
 use OxidEsales\Smarty\SmartyContextInterface;
@@ -18,17 +18,15 @@ class SmartyPrefiltersDataProviderTest extends \PHPUnit\Framework\TestCase
     {
         $smartyContextMock = $this->getSmartyContextMock();
 
-        $dataProvider = new SmartyPrefiltersDataProvider($smartyContextMock);
+        $settings = (new SmartyPrefiltersDataProvider($smartyContextMock))->getPrefilterPlugins();
 
-        $settings = [
-            'smarty_prefilter_oxblock' => 'testShopPath/Internal/Framework/Smarty/Plugin/prefilter.oxblock.php',
-            'smarty_prefilter_oxtpldebug' => 'testShopPath/Internal/Framework/Smarty/Plugin/prefilter.oxtpldebug.php',
-        ];
-
-        $this->assertEquals($settings, $dataProvider->getPrefilterPlugins());
+        $this->assertEquals('prefilter.oxblock.php', basename($settings['smarty_prefilter_oxblock']));
+        $this->assertTrue(file_exists($settings['smarty_prefilter_oxblock']));
+        $this->assertEquals('prefilter.oxtpldebug.php', basename($settings['smarty_prefilter_oxtpldebug']));
+        $this->assertTrue(file_exists($settings['smarty_prefilter_oxtpldebug']));
     }
 
-    private function getSmartyContextMock($securityMode = false): SmartyContextInterface
+    private function getSmartyContextMock(): SmartyContextInterface
     {
         $smartyContextMock = $this
             ->getMockBuilder(SmartyContextInterface::class)

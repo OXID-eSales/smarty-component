@@ -7,11 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Integration\Configuration;
 
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\Smarty\Configuration\SmartySettingsDataProvider;
+use OxidEsales\Smarty\Configuration\SmartySettingsDataProviderInterface;
 use OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler;
+use OxidEsales\Smarty\Extension\SmartyTemplateHandlerInterface;
+use OxidEsales\Smarty\Resolver\TemplateDirectoryResolverInterface;
 use OxidEsales\Smarty\SmartyContextInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -21,14 +24,22 @@ class SmartySettingsDataProviderTest extends TestCase
     {
         $smartyContextMock = $this->getSmartyContextMock();
 
-        $dataProvider = new SmartySettingsDataProvider($smartyContextMock, new SmartyDefaultTemplateHandler($smartyContextMock));
+        $templateResolver = $this->getTemplateDirectoryResolverMock();
+
+        $templateHandler = $this->getSmartyTemplateHandlerMock();
+
+        $dataProvider = new SmartySettingsDataProvider(
+            $smartyContextMock,
+            $templateHandler,
+            $templateResolver
+        );
         $settings = [
             'caching' => false,
             'left_delimiter' => '[{',
             'right_delimiter' => '}]',
             'template_dir' => ['testTemplateDir'],
             'compile_id' => '7f96e0d92070fd4733296e5118fd5a01',
-            'default_template_handler_func' => [new SmartyDefaultTemplateHandler($smartyContextMock), 'handleTemplate'],
+            'default_template_handler_func' => [$templateHandler, 'handleTemplate'],
             'debugging' => true,
             'compile_check' => true,
             'php_handling' => 1,
@@ -36,6 +47,26 @@ class SmartySettingsDataProviderTest extends TestCase
         ];
 
         $this->assertEquals($settings, $dataProvider->getSettings());
+    }
+
+    private function getTemplateDirectoryResolverMock(): TemplateDirectoryResolverInterface
+    {
+        $resolverMock = $this
+            ->getMockBuilder(TemplateDirectoryResolverInterface::class)
+            ->getMock();
+
+        $resolverMock
+            ->method('getTemplateDirectories')
+            ->willReturn(['testTemplateDir']);
+
+        return $resolverMock;
+    }
+
+    private function getSmartyTemplateHandlerMock(): SmartyTemplateHandlerInterface
+    {
+        return $this
+            ->getMockBuilder(SmartyTemplateHandlerInterface::class)
+            ->getMock();
     }
 
     private function getSmartyContextMock(): SmartyContextInterface
@@ -47,10 +78,6 @@ class SmartySettingsDataProviderTest extends TestCase
         $smartyContextMock
             ->method('getTemplateEngineDebugMode')
             ->willReturn(true);
-
-        $smartyContextMock
-            ->method('getTemplateDirectories')
-            ->willReturn(['testTemplateDir']);
 
         $smartyContextMock
             ->method('getTemplateCompileCheckMode')

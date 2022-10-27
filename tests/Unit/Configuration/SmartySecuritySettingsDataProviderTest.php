@@ -7,9 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartySecuritySettingsDataProvider;
+use OxidEsales\Smarty\Resolver\TemplateDirectoryResolverInterface;
 use OxidEsales\Smarty\SmartyContextInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -23,9 +24,7 @@ class SmartySecuritySettingsDataProviderTest extends TestCase
 
     public function testGetSecuritySettings()
     {
-        $smartyContextMock = $this->getSmartyContextMock();
-
-        $dataProvider = new SmartySecuritySettingsDataProvider($smartyContextMock);
+        $dataProvider = new SmartySecuritySettingsDataProvider($this->getTemplateDirectoryResolverMock());
         $settings = [
             'php_handling' => 2,
             'security' => true,
@@ -40,16 +39,16 @@ class SmartySecuritySettingsDataProviderTest extends TestCase
         $this->assertEquals($settings, $dataProvider->getSecuritySettings());
     }
 
-    private function getSmartyContextMock(): SmartyContextInterface
+    private function getTemplateDirectoryResolverMock(): TemplateDirectoryResolverInterface
     {
-        $smartyContextMock = $this
-            ->getMockBuilder(SmartyContextInterface::class)
+        $mock = $this
+            ->getMockBuilder(TemplateDirectoryResolverInterface::class)
             ->getMock();
 
-        $smartyContextMock
+        $mock
             ->method('getTemplateDirectories')
             ->willReturn(['testTemplateDir']);
 
-        return $smartyContextMock;
+        return $mock;
     }
 }

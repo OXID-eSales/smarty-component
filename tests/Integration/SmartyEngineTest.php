@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty;
+namespace OxidEsales\Smarty\Tests\Integration;
 
 use OxidEsales\Smarty\Bridge\SmartyEngineBridge;
 use OxidEsales\Smarty\SmartyContext;

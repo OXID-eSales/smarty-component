@@ -103,7 +103,7 @@ class SmartyContext implements SmartyContextInterface
      */
     public function getTemplatePath($templateName): string
     {
-        return $this->config->getTemplatePath($templateName, $this->getBackendMode());
+        return (string) $this->config->getTemplatePath($templateName, $this->getBackendMode());
     }
 
     /**

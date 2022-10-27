@@ -7,7 +7,7 @@ declare(strict_types=1);
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty\Module\TemplateExtension;
+namespace OxidEsales\Smarty\Tests\Integration\Module\TemplateExtension;
 
 use OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtension;
 use OxidEsales\Smarty\Module\TemplateExtension\TemplateBlockExtensionDaoInterface;

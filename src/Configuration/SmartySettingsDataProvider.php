@@ -29,7 +29,7 @@ class SmartySettingsDataProvider implements SmartySettingsDataProviderInterface
      * @return array
      */
     public function getSettings(): array
-    {//var_dump($this->directoryResolver->getTemplateDirectories());
+    {
         return [
             'caching' => false,
             'left_delimiter' => '[{',

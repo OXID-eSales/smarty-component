@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration;
+namespace OxidEsales\Smarty\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use Psr\Container\ContainerInterface;

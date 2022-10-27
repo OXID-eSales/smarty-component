@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty\Extension;
+namespace OxidEsales\Smarty\Tests\Integration\Extension;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\FileLocatorInterface;
 use OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler;
-use OxidEsales\Smarty\SmartyContextInterface;
 
 class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
 {
@@ -89,15 +89,15 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
 
     private function getSmartyDefaultTemplateHandler($template)
     {
-        $context = $this
-        ->getMockBuilder(SmartyContextInterface::class)
+        $locator = $this
+        ->getMockBuilder(FileLocatorInterface::class)
         ->getMock();
 
-        $context
-            ->method('getTemplatePath')
+        $locator
+            ->method('locate')
             ->willReturn($template);
 
-        return new SmartyDefaultTemplateHandler($context);
+        return new SmartyDefaultTemplateHandler($locator);
     }
 
     private function getTemplateDirectory()

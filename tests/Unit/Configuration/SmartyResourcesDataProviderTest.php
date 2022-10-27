@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Unit\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartyResourcesDataProvider;
 use OxidEsales\Smarty\Extension\ResourcePluginInterface;

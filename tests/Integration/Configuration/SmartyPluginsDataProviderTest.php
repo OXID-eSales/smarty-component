@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\Tests\Integration\Internal\Transition\Smarty\Configuration;
+namespace OxidEsales\Smarty\Tests\Integration\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;

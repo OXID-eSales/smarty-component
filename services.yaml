@@ -45,6 +45,8 @@ services:
     public: true
   OxidEsales\Smarty\Extension\SmartyTemplateHandlerInterface:
     class: OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler
+    arguments:
+      - '@OxidEsales\Smarty\Locator\TemplateFileLocator'
   OxidEsales\Smarty\Extension\ResourcePluginInterface:
     class: OxidEsales\Smarty\Extension\CacheResourcePlugin
   OxidEsales\Smarty\Module\Plugin\SmartyPluginDaoInterface:
@@ -83,6 +85,9 @@ services:
   oxid_esales.smarty.module.setup.template_block_module_setting_handler:
     class: OxidEsales\Smarty\Module\Setup\Handler\TemplateBlockModuleSettingHandler
 
+  oxid_esales.smarty.module.setup.templates_module_setting_handler:
+    class: OxidEsales\Smarty\Module\Setup\Handler\TemplatesModuleSettingHandler
+
   oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler:
     class: OxidEsales\Smarty\Module\Setup\Handler\ShopConfigurationSmartyPluginDirectoryHandler
 
@@ -95,6 +100,7 @@ services:
       - '@OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ModuleConfigurationDaoInterface'
       - '@oxid_esales.smarty.module.setup.template_block_module_setting_handler'
       - '@oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler'
+      - '@oxid_esales.smarty.module.setup.templates_module_setting_handler'
     tags:
       - { name: kernel.event_subscriber }
 
@@ -111,14 +117,34 @@ services:
     tags:
       - { name: 'oxid.template.file.locator', priority: 100 }
 
+  OxidEsales\Smarty\Locator\TemplateFileLocator:
+
+  OxidEsales\Smarty\Locator\FrontendTemplateFileLocator:
+
+  OxidEsales\Smarty\Locator\AdminTemplateFileLocator:
+
   oxid_esales.templating.frontend.template.loader:
     class: OxidEsales\Smarty\Loader\TemplateLoader
     public: true
     arguments:
-      - '@OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\TemplateFileLocator'
+      - '@OxidEsales\Smarty\Locator\TemplateFileLocator'
 
   oxid_esales.templating.admin.template.loader:
     class: OxidEsales\Smarty\Loader\TemplateLoader
     public: true
     arguments:
-      - '@OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\AdminTemplateFileLocator'
+      - '@OxidEsales\Smarty\Locator\AdminTemplateFileLocator'
+
+  OxidEsales\Smarty\Module\Template\ModuleTemplatePathResolverInterface:
+    class: OxidEsales\Smarty\Module\Template\ModuleTemplatePathResolver
+    arguments:
+      $filesystem: '@oxid_esales.symfony.file_system'
+    public: true
+
+  OxidEsales\Smarty\Module\Template\TemplateDaoInterface:
+    class: OxidEsales\Smarty\Module\Template\TemplateDao
+
+  OxidEsales\Smarty\Module\Template\ActiveModuleTemplateDataProviderInterface:
+    class: OxidEsales\Smarty\Module\Template\ActiveModuleTemplateDataProvider
+
+  OxidEsales\Smarty\Exception\TemplateFileNotFoundException:

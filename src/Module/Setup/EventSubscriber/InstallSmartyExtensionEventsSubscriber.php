@@ -20,7 +20,8 @@ class InstallSmartyExtensionEventsSubscriber implements EventSubscriberInterface
     public function __construct(
         private ModuleConfigurationDaoInterface $moduleConfigurationDao,
         private ModuleConfigurationHandlerInterface $blocksConfigurationHandler,
-        private ModuleConfigurationHandlerInterface $pluginsConfigurationHandler)
+        private ModuleConfigurationHandlerInterface $pluginsConfigurationHandler,
+        private ModuleConfigurationHandlerInterface $templateConfigurationHandler)
     {
     }
 
@@ -32,6 +33,7 @@ class InstallSmartyExtensionEventsSubscriber implements EventSubscriberInterface
         $moduleConfiguration = $this->moduleConfigurationDao->get($event->getModuleId(), $event->getShopId());
         $this->blocksConfigurationHandler->handleOnModuleActivation($moduleConfiguration, $event->getShopId());
         $this->pluginsConfigurationHandler->handleOnModuleActivation($moduleConfiguration, $event->getShopId());
+        $this->templateConfigurationHandler->handleOnModuleActivation($moduleConfiguration, $event->getShopId());
     }
 
     /**
@@ -42,6 +44,7 @@ class InstallSmartyExtensionEventsSubscriber implements EventSubscriberInterface
         $moduleConfiguration = $this->moduleConfigurationDao->get($event->getModuleId(), $event->getShopId());
         $this->blocksConfigurationHandler->handleOnModuleDeactivation($moduleConfiguration, $event->getShopId());
         $this->pluginsConfigurationHandler->handleOnModuleDeactivation($moduleConfiguration, $event->getShopId());
+        $this->templateConfigurationHandler->handleOnModuleDeactivation($moduleConfiguration, $event->getShopId());
     }
 
     public static function getSubscribedEvents(): array
