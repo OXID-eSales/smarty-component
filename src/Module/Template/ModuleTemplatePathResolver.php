@@ -11,7 +11,7 @@ namespace OxidEsales\Smarty\Module\Template;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ActiveModulesDataProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class ModuleTemplatePathResolver implements ModuleTemplatePathResolverInterface
 {

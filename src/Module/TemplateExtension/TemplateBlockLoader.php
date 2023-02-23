@@ -12,7 +12,7 @@ namespace OxidEsales\Smarty\Module\TemplateExtension;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Path\ModulePathResolverInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class TemplateBlockLoader implements TemplateBlockLoaderInterface
 {

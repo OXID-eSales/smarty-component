@@ -19,7 +19,7 @@ use OxidEsales\EshopCommunity\Tests\Integration\SmartyTrait;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 final class BlockOxIfContentTest extends UnitTestCase
 {

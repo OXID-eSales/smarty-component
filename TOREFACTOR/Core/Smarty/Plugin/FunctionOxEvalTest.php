@@ -15,7 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInte
 use OxidEsales\EshopCommunity\Tests\Integration\SmartyTrait;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 final class FunctionOxEvalTest extends UnitTestCase
 {

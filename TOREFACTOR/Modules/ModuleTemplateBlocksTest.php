@@ -17,7 +17,7 @@ use OxidEsales\EshopCommunity\Tests\ContainerTrait;
 use OxidEsales\Facts\Facts;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use oxUtilsView;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * @group module
