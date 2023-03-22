@@ -155,6 +155,7 @@ class SmartyContext implements SmartyContextInterface
     private function getActiveFrontendThemeId(): string
     {
         return $this->config->getConfigParam('sCustomTheme')
-            ?: $this->config->getConfigParam('sTheme');
+            ?: $this->config->getConfigParam('sTheme')
+            ?: '';
     }
 }
