@@ -1,0 +1,4 @@
+table_storage:
+  table_name: oxmigrations_smarty
+migrations_paths:
+  'OxidEsales\Smarty\Migrations': data
