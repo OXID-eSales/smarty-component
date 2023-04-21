@@ -18,7 +18,7 @@ use OxidEsales\EshopCommunity\Tests\Unit\Internal\ContextStub;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SmartyBuilderTest extends IntegrationTestCase
+final class SmartyBuilderTest extends IntegrationTestCase
 {
     use ProphecyTrait;
 
@@ -28,7 +28,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     {
         parent::setUp();
         $this->debugMode = Registry::getConfig()->getConfigParam('iDebug');
-        new \Smarty(); // Initalize constants
+        new \Smarty(); // Initialize constants
     }
 
     public function tearDown(): void
@@ -40,7 +40,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     /**
      * @dataProvider smartySettingsDataProvider
      */
-    public function testSmartySettingsAreSetCorrect(int $securityMode, array $smartySettings): void
+    public function testSmartySettingsAreSetCorrect(int $securityMode): void
     {
         $config = Registry::getConfig();
         $config->setConfigParam('blDemoShop', $securityMode);
@@ -59,9 +59,14 @@ class SmartyBuilderTest extends IntegrationTestCase
             ->registerResources($configuration->getResources())
             ->getSmarty();
 
+        $smartySettings = $securityMode ? $this->getSmartySettingsWithSecurityOn() : $this->getSmartySettingsWithSecurityOff();
         foreach ($smartySettings as $varName => $varValue) {
             $this->assertTrue(isset($smarty->$varName), $varName . ' setting was not set');
-            $this->assertEquals($varValue, $smarty->$varName, 'Not correct value of the smarts setting: ' . $varName);
+            $this->assertEquals(
+                $varValue,
+                $smarty->$varName,
+                "Assertion failed for the Smarty setting: '$varName'"
+            );
         }
     }
 
@@ -71,15 +76,15 @@ class SmartyBuilderTest extends IntegrationTestCase
     public function smartySettingsDataProvider(): array
     {
         return [
-            'security on' => [1, $this->getSmartySettingsWithSecurityOn()],
-            'security off' => [0, $this->getSmartySettingsWithSecurityOff()]
+            'security on' => [1],
+            'security off' => [0],
         ];
     }
 
     private function getSmartySettingsWithSecurityOn(): array
     {
         $config = Registry::getConfig();
-        $templateDir = Registry::getConfig()->getTemplateDir();
+        $templateDir = $config->getTemplateDir();
         $shopId = $config->getShopId();
         return [
             'security' => true,
@@ -87,8 +92,8 @@ class SmartyBuilderTest extends IntegrationTestCase
             'left_delimiter' => '[{',
             'right_delimiter' => '}]',
             'caching' => false,
-            'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
-            'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
+            'compile_dir' => $config->getConfigParam('sCompileDir') . 'template_cache',
+            'cache_dir' => $config->getConfigParam('sCompileDir') . 'template_cache',
             'compile_id' => md5($templateDir . '__' . $shopId),
             'template_dir' => [$templateDir],
             'debugging' => false,
@@ -133,7 +138,7 @@ class SmartyBuilderTest extends IntegrationTestCase
     private function getSmartySettingsWithSecurityOff(): array
     {
         $config = Registry::getConfig();
-        $templateDir = Registry::getConfig()->getTemplateDir();
+        $templateDir = $config->getTemplateDir();
         $shopId = $config->getShopId();
         return [
             'security' => false,
@@ -141,8 +146,8 @@ class SmartyBuilderTest extends IntegrationTestCase
             'left_delimiter' => '[{',
             'right_delimiter' => '}]',
             'caching' => false,
-            'compile_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
-            'cache_dir' => $config->getConfigParam('sCompileDir') . "template_cache",
+            'compile_dir' => $config->getConfigParam('sCompileDir') . 'template_cache',
+            'cache_dir' => $config->getConfigParam('sCompileDir') . 'template_cache',
             'compile_id' => md5($templateDir . '__' . $shopId),
             'template_dir' => [$templateDir],
             'debugging' => false,

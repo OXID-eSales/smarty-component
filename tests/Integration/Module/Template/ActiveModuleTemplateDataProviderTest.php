@@ -156,6 +156,11 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
             {
                 return isset($this->cache[$shopId][$key]);
             }
+
+            public function invalidateAll(): void
+            {
+                // TODO: Implement invalidateAll() method.
+            }
         };
     }
 }

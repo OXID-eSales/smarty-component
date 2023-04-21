@@ -32,6 +32,7 @@ final class ModuleTemplatePathResolverTest extends TestCase
 
         $resolver = new ModuleTemplatePathResolver(
             $this->getActiveModulesDataProviderMock(),
+            $this->getActiveModuleTemplateDataProviderMock(),
             $filesystem->reveal()
         );
 
@@ -48,14 +49,13 @@ final class ModuleTemplatePathResolverTest extends TestCase
 
         $resolver = new ModuleTemplatePathResolver(
             $this->getActiveModulesDataProviderMock(),
+            $this->getActiveModuleTemplateDataProviderMock(),
             $filesystem->reveal()
         );
 
         $this->expectException(ModuleTemplateNotFoundException::class);
 
         $resolver->resolve('module1key2');
-
-
     }
 
     public function testWithNotExistentTemplateKey(): void
