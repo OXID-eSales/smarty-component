@@ -9,17 +9,16 @@ declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Tests\Integration;
 
-use OxidEsales\Smarty\Bridge\SmartyEngineBridge;
-use OxidEsales\Smarty\SmartyContext;
-use OxidEsales\Smarty\SmartyContextInterface;
-use OxidEsales\Smarty\SmartyEngine;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\Resolver\TemplateFileResolverInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\Smarty\Bridge\SmartyEngineBridge;
+use OxidEsales\Smarty\SmartyContextInterface;
+use OxidEsales\Smarty\SmartyEngine;
+use Smarty;
 
-class SmartyEngineTest extends IntegrationTestCase
+final class SmartyEngineTest extends IntegrationTestCase
 {
-
-    public function testExists()
+    public function testExists(): void
     {
         $template = $this->getTemplateDirectory() . 'smartyTemplate.tpl';
 
@@ -28,46 +27,46 @@ class SmartyEngineTest extends IntegrationTestCase
         $this->assertTrue($engine->exists($template));
     }
 
-    public function testExistsWithNonExistentTemplates()
+    public function testExistsWithNonExistentTemplates(): void
     {
         $engine = $this->getEngine();
 
         $this->assertFalse($engine->exists('foobar'));
     }
 
-    public function testRender()
+    public function testRender(): void
     {
         $template = $this->getTemplateDirectory() . 'smartyTemplate.tpl';
 
         $engine = $this->getEngine();
 
-        $this->assertTrue(file_exists($template));
+        $this->assertFileExists($template);
         $this->assertSame('Hello OXID!', $engine->render($template));
     }
 
-    public function testRenderWithContext()
+    public function testRenderWithContext(): void
     {
         $template = $this->getTemplateDirectory() . 'smartyTemplate.tpl';
 
         $engine = $this->getEngine();
 
-        $this->assertTrue(file_exists($template));
+        $this->assertFileExists($template);
         $this->assertSame('Hello Test!', $engine->render($template, ['title' => 'Hello Test!']));
     }
 
-    public function testRenderWithCacheId()
+    public function testRenderWithCacheId(): void
     {
         $template = $this->getTemplateDirectory() . 'smartyTemplate.tpl';
 
         $engine = $this->getEngine();
         $context = ['title' => 'Hello Test!', 'oxEngineTemplateId' => md5('smartyTemplate.tpl')];
 
-        $this->assertTrue(file_exists($template));
+        $this->assertFileExists($template);
         $this->assertSame('Hello Test!', $engine->render($template, $context));
         $this->assertSame('Hello Test!', $engine->render($template, $context));
     }
 
-    public function testAddAndGetGlobals()
+    public function testAddAndGetGlobals(): void
     {
         $engine = $this->getEngine();
         $engine->addGlobal('testGlobal', 'testValue');
@@ -75,7 +74,7 @@ class SmartyEngineTest extends IntegrationTestCase
         $this->assertSame('testValue', $engine->_tpl_vars['testGlobal']);
     }
 
-    public function testRenderFragment()
+    public function testRenderFragment(): void
     {
         $fragment = '[{assign var=\'title\' value=$title|default:\'Hello OXID!\'}][{$title}]';
         $context = ['title' => 'Hello Test!'];
@@ -84,21 +83,21 @@ class SmartyEngineTest extends IntegrationTestCase
         $this->assertSame('Hello Test!', $engine->renderFragment($fragment, 'ox:testid', $context));
     }
 
-    public function testRenderFragmentWithSpecialCharacters()
+    public function testRenderFragmentWithSpecialCharacters(): void
     {
-        $fragment = '[{$title}] Nekilnojamojo turto agentūrų verslo sėkme Литовские европарламентарии, срок полномочий которых в 2009 году подходит к концу Der Umstieg war für uns ein voller Erfolg. OXID eShop ist flexibel und benutzerfreundlich';
-        $renderedFragment = 'Hello Test! Nekilnojamojo turto agentūrų verslo sėkme Литовские европарламентарии, срок полномочий которых в 2009 году подходит к концу Der Umstieg war für uns ein voller Erfolg. OXID eShop ist flexibel und benutzerfreundlich';
+        $fragment = '[{$title}] Nekilnojamojo turto agentūrų verslo sėkme Литовские европарламентарии';
+        $renderedFragment = 'Hello Test! Nekilnojamojo turto agentūrų verslo sėkme Литовские европарламентарии';
         $context = ['title' => 'Hello Test!'];
 
         $engine = $this->get('smarty.smarty_engine_factory')->getTemplateEngine();
         $this->assertSame($renderedFragment, $engine->renderFragment($fragment, 'ox:testid', $context));
     }
 
-    public function testRenderFragmentNotAllowedToParseSmarty()
+    public function testRenderFragmentNotAllowedToParseSmarty(): void
     {
         $fragment = '[{assign var=\'title\' value=$title|default:\'Hello OXID!\'}][{$title}]';
         $context = ['title' => 'Hello Test!'];
-        $smarty = new \Smarty();
+        $smarty = new Smarty();
         $engine = new SmartyEngine(
             $smarty,
             new SmartyEngineBridge(),
@@ -108,7 +107,7 @@ class SmartyEngineTest extends IntegrationTestCase
         $this->assertSame($fragment, $engine->renderFragment($fragment, 'ox:testid', $context));
     }
 
-    public function testRenderFragmentNoSmartyTagsAdded()
+    public function testRenderFragmentNoSmartyTagsAdded(): void
     {
         $fragment = '{assign var=\'title\' value=$title|default:\'Hello OXID!\'}{$title}';
         $context = ['title' => 'Hello Test!'];
@@ -117,16 +116,16 @@ class SmartyEngineTest extends IntegrationTestCase
         $this->assertSame($fragment, $engine->renderFragment($fragment, 'ox:testid', $context));
     }
 
-    public function testMagicSetterAndGetter()
+    public function testMagicSetterAndGetter(): void
     {
         $engine = $this->get('smarty.smarty_engine_factory')->getTemplateEngine();
         $engine->_tpl_vars = 'testValue';
         $this->assertSame('testValue', $engine->_tpl_vars);
     }
 
-    private function getEngine()
+    private function getEngine(): SmartyEngine
     {
-        $smarty = new \Smarty();
+        $smarty = new Smarty();
         $smarty->compile_dir = sys_get_temp_dir();
         $smarty->left_delimiter = '[{';
         $smarty->right_delimiter = '}]';
@@ -149,7 +148,7 @@ class SmartyEngineTest extends IntegrationTestCase
         return $context;
     }
 
-    private function getTemplateDirectory()
+    private function getTemplateDirectory(): string
     {
         return __DIR__ . '/Fixtures/';
     }

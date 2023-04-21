@@ -38,8 +38,14 @@ final class TemplateBlockModuleSettingHandlerTest extends IntegrationTestCase
         );
         $templateBlockDao = $this->get(TemplateBlockExtensionDaoInterface::class);
         $this->assertTrue($templateBlockDao->exists(['test-module'], 1));
-        $this->assertSame(1, count($templateBlockDao->getExtensionsByTemplateName('template_1.tpl',['test-module'], 1, ['theme_id'])));
-        $this->assertSame(1, count($templateBlockDao->getExtensionsByTemplateName('template_2.tpl',['test-module'], 1)));
+        $this->assertCount(
+            1,
+            $templateBlockDao->getExtensionsByTemplateName('template_1.tpl', ['test-module'], 1, ['theme_id'])
+        );
+        $this->assertCount(
+            1,
+            $templateBlockDao->getExtensionsByTemplateName('template_2.tpl', ['test-module'], 1)
+        );
     }
 
     public function testHandlingOnModuleDeactivation(): void

@@ -16,6 +16,7 @@ use OxidEsales\Smarty\SmartyBuilder;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\Unit\Internal\ContextStub;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Smarty;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class SmartyBuilderTest extends IntegrationTestCase
@@ -28,7 +29,7 @@ final class SmartyBuilderTest extends IntegrationTestCase
     {
         parent::setUp();
         $this->debugMode = Registry::getConfig()->getConfigParam('iDebug');
-        new \Smarty(); // Initialize constants
+        new Smarty();
     }
 
     public function tearDown(): void
@@ -59,7 +60,9 @@ final class SmartyBuilderTest extends IntegrationTestCase
             ->registerResources($configuration->getResources())
             ->getSmarty();
 
-        $smartySettings = $securityMode ? $this->getSmartySettingsWithSecurityOn() : $this->getSmartySettingsWithSecurityOff();
+        $smartySettings = $securityMode ?
+            $this->getSmartySettingsWithSecurityOn() :
+            $this->getSmartySettingsWithSecurityOff();
         foreach ($smartySettings as $varName => $varValue) {
             $this->assertTrue(isset($smarty->$varName), $varName . ' setting was not set');
             $this->assertEquals(
@@ -158,7 +161,6 @@ final class SmartyBuilderTest extends IntegrationTestCase
 
     private function getSmartyPlugins(): array
     {
-        /** @var SmartyPluginsDataProviderInterface $pluginProvider */
         $pluginProvider = $this->get(SmartyPluginsDataProviderInterface::class);
         return array_merge($pluginProvider->getPlugins(), ['plugins']);
     }

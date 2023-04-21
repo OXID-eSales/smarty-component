@@ -9,18 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Tests\Integration\Configuration;
 
-use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\Smarty\Configuration\SmartySettingsDataProvider;
-use OxidEsales\Smarty\Configuration\SmartySettingsDataProviderInterface;
-use OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler;
 use OxidEsales\Smarty\Extension\SmartyTemplateHandlerInterface;
 use OxidEsales\Smarty\Resolver\TemplateDirectoryResolverInterface;
 use OxidEsales\Smarty\SmartyContextInterface;
 use PHPUnit\Framework\TestCase;
 
-class SmartySettingsDataProviderTest extends TestCase
+final class SmartySettingsDataProviderTest extends TestCase
 {
-    public function testGetSmartySettings()
+    public function testGetSmartySettings(): void
     {
         $smartyContextMock = $this->getSmartyContextMock();
 

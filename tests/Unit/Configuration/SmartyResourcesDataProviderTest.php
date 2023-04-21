@@ -13,7 +13,7 @@ use OxidEsales\Smarty\Configuration\SmartyResourcesDataProvider;
 use OxidEsales\Smarty\Extension\ResourcePluginInterface;
 use PHPUnit\Framework\TestCase;
 
-class SmartyResourcesDataProviderTest extends TestCase
+final class SmartyResourcesDataProviderTest extends TestCase
 {
     public function testGetSmartyResources(): void
     {

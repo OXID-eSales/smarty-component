@@ -13,9 +13,10 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Unit\Internal\ContextStub;
 use OxidEsales\Smarty\SmartyContext;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class SmartyContextTest extends TestCase
+final class SmartyContextTest extends TestCase
 {
     public function getTemplateEngineDebugModeDataProvider(): array
     {
@@ -79,7 +80,8 @@ class SmartyContextTest extends TestCase
             ->willReturn(true);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
-        $this->assertSame(true, $smartyContext->getTemplateSecurityMode());
+
+        $this->assertTrue($smartyContext->getTemplateSecurityMode());
     }
 
     public function testGetTemplateCompileCheckMode(): void
@@ -90,7 +92,8 @@ class SmartyContextTest extends TestCase
             ->willReturn(true);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
-        $this->assertSame(true, $smartyContext->getTemplateCompileCheckMode());
+
+        $this->assertTrue($smartyContext->getTemplateCompileCheckMode());
     }
 
     public function testGetTemplateCompileCheckModeInProductiveMode(): void
@@ -103,6 +106,7 @@ class SmartyContextTest extends TestCase
             ->willReturn(true);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
+
         $this->assertFalse($smartyContext->getTemplateCompileCheckMode());
     }
 
@@ -114,6 +118,7 @@ class SmartyContextTest extends TestCase
             ->willReturn(1);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
+
         $this->assertSame(1, $smartyContext->getTemplatePhpHandlingMode());
     }
 
@@ -127,6 +132,7 @@ class SmartyContextTest extends TestCase
             ->willReturn('templatePath');
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
+
         $this->assertSame('templatePath', $smartyContext->getTemplatePath('testTemplate'));
     }
 
@@ -149,6 +155,7 @@ class SmartyContextTest extends TestCase
             ->willReturn(false);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
+
         $this->assertSame(['testTemplateDir'], $smartyContext->getTemplateDirectories());
     }
 
@@ -165,6 +172,7 @@ class SmartyContextTest extends TestCase
             ->willReturn(false);
 
         $smartyContext = new SmartyContext($context, $config, 'admin_smarty');
+
         $this->assertSame(md5($templateDir . '__' . $shopId), $smartyContext->getTemplateCompileId());
     }
 
@@ -186,19 +194,14 @@ class SmartyContextTest extends TestCase
             ->willReturn(1);
 
         $smartyContext = new SmartyContext(new ContextStub(), $config, 'admin_smarty');
+
         $this->assertTrue($smartyContext->isSmartyForContentDeactivated());
     }
 
-    /**
-     * @return Config
-     */
-    private function getConfigMock()
+    private function getConfigMock(): Config|MockObject
     {
-        $configMock = $this
+        return $this
             ->getMockBuilder(Config::class)
             ->getMock();
-
-        return $configMock;
     }
-
 }

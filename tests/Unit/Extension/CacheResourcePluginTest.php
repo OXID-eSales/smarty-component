@@ -9,15 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Tests\Unit\Extension;
 
+use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Smarty\Extension\CacheResourcePlugin;
 use OxidEsales\Smarty\SmartyContextInterface;
+use PHPUnit\Framework\TestCase;
+use Smarty;
 
-class CacheResourcePluginTest extends \PHPUnit\Framework\TestCase
+final class CacheResourcePluginTest extends TestCase
 {
-    public function testGetTemplate()
+    public function testGetTemplate(): void
     {
-        $smarty = $this->getMockBuilder(\Smarty::class)->getMock();
-        $smarty->oxidcache = new \OxidEsales\Eshop\Core\Field('newValue', \OxidEsales\Eshop\Core\Field::T_RAW);
+        $smarty = $this->getMockBuilder(Smarty::class)->getMock();
+        $smarty->oxidcache = new Field('newValue', Field::T_RAW);
         $smarty->security = false;
 
         $resource = $this->getSmartyExtensionObject();
@@ -28,10 +31,10 @@ class CacheResourcePluginTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($smarty->security);
     }
 
-    public function testGetTemplateIfDemoShopIsActive()
+    public function testGetTemplateIfDemoShopIsActive(): void
     {
-        $smarty = $this->getMockBuilder(\Smarty::class)->getMock();
-        $smarty->oxidcache = new \OxidEsales\Eshop\Core\Field('newValue', \OxidEsales\Eshop\Core\Field::T_RAW);
+        $smarty = $this->getMockBuilder(Smarty::class)->getMock();
+        $smarty->oxidcache = new Field('newValue', Field::T_RAW);
         $smarty->security = false;
 
         $resource = $this->getSmartyExtensionObject(true);
@@ -42,39 +45,39 @@ class CacheResourcePluginTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($smarty->security);
     }
 
-    public function testGetTimestamp()
+    public function testGetTimestamp(): void
     {
-        $smarty = $this->getMockBuilder(\Smarty::class)->getMock();
+        $smarty = $this->getMockBuilder(Smarty::class)->getMock();
 
         $resource = $this->getSmartyExtensionObject();
 
         $time = 2;
         $this->assertTrue($resource::getTimestamp('templateName', $time, $smarty));
-        $this->assertTrue(is_numeric($time));
+        $this->assertIsNumeric($time);
         $this->assertTrue($time > 2);
     }
 
-    public function testGetTimestampIfTimeCacheIsGiven()
+    public function testGetTimestampIfTimeCacheIsGiven(): void
     {
-        $smarty = $this->getMockBuilder(\Smarty::class)->getMock();
-        $smarty->oxidtimecache = new \OxidEsales\Eshop\Core\Field(1, \OxidEsales\Eshop\Core\Field::T_RAW);
+        $smarty = $this->getMockBuilder(Smarty::class)->getMock();
+        $smarty->oxidtimecache = new Field(1, Field::T_RAW);
 
         $resource = $this->getSmartyExtensionObject();
 
         $time = 2;
         $this->assertTrue($resource::getTimestamp('templateName', $time, $smarty));
-        $this->assertTrue(is_numeric($time));
+        $this->assertIsNumeric($time);
         $this->assertEquals(1, $time);
     }
 
-    public function testGetSecure()
+    public function testGetSecure(): void
     {
-        $smarty = $this->getMockBuilder(\Smarty::class)->getMock();
+        $smarty = $this->getMockBuilder(Smarty::class)->getMock();
         $resource = $this->getSmartyExtensionObject();
-        $this->assertTrue($resource::getSecure("templateName", $smarty));
+        $this->assertTrue($resource::getSecure('templateName', $smarty));
     }
 
-    public function testGetTrusted()
+    public function testGetTrusted(): void
     {
         $smartyContextMock = $this
             ->getMockBuilder(SmartyContextInterface::class)
@@ -85,7 +88,7 @@ class CacheResourcePluginTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(method_exists($resource, 'getTrusted'));
     }
 
-    private function getSmartyExtensionObject($securityMode = false)
+    private function getSmartyExtensionObject(bool $securityMode = false): CacheResourcePlugin
     {
         $smartyContextMock = $this
         ->getMockBuilder(SmartyContextInterface::class)

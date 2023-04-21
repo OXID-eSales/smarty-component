@@ -11,10 +11,11 @@ namespace OxidEsales\Smarty\Tests\Unit\Bridge;
 
 use OxidEsales\Smarty\Bridge\SmartyTemplateRendererBridge;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
+use PHPUnit\Framework\TestCase;
 
-class SmartyTemplateRendererBridgeTest extends \PHPUnit\Framework\TestCase
+final class SmartyTemplateRendererBridgeTest extends TestCase
 {
-    public function testGetTemplateRenderer()
+    public function testGetTemplateRenderer(): void
     {
         $renderer = $this
             ->getMockBuilder(TemplateRendererInterface::class)

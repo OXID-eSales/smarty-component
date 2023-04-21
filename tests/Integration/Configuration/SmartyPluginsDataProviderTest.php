@@ -13,9 +13,9 @@ use OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 
-class SmartyPluginsDataProviderTest extends IntegrationTestCase
+final class SmartyPluginsDataProviderTest extends IntegrationTestCase
 {
-    public function testGetPlugins()
+    public function testGetPlugins(): void
     {
         $this->markTestIncomplete('First refactor module plugin functionality');
         $dataProvider = $this->get(SmartyPluginsDataProviderInterface::class);

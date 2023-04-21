@@ -12,12 +12,13 @@ namespace OxidEsales\Smarty\Tests\Integration\Bridge;
 use OxidEsales\Smarty\Bridge\SmartyTemplateRendererBridge;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use Smarty;
 
-class SmartyTemplateRendererBridgeTest extends IntegrationTestCase
+final class SmartyTemplateRendererBridgeTest extends IntegrationTestCase
 {
-    public function testSetGetEngine()
+    public function testSetGetEngine(): void
     {
-        $smarty = new \Smarty();
+        $smarty = new Smarty();
         $renderer = $this->get(TemplateRendererInterface::class);
         $bridge = new SmartyTemplateRendererBridge($renderer);
         $bridge->setEngine($smarty);

@@ -14,10 +14,11 @@ use OxidEsales\Smarty\Configuration\SmartyPluginsDataProviderInterface;
 use OxidEsales\Smarty\Module\Plugin\ModuleSmartyPluginsDataProvider;
 use OxidEsales\Smarty\Module\Plugin\SmartyPluginDaoInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use PHPUnit\Framework\TestCase;
 
-class ModuleSmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
+final class ModuleSmartyPluginsDataProviderTest extends TestCase
 {
-    public function testGetPlugins()
+    public function testGetPlugins(): void
     {
         $dataProvider = new ModuleSmartyPluginsDataProvider(
             $this->getSmartyPluginsDataProviderMock(),

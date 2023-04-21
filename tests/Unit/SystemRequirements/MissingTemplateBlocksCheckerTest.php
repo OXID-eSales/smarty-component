@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OxidEsales\Smarty\Tests\Unit\SystemRequirements;
-
 
 use OxidEsales\EshopCommunity\Tests\ContainerTrait;
 use OxidEsales\Smarty\Exception\TemplateFileNotFoundException;
@@ -14,15 +12,18 @@ use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use PHPUnit\Framework\TestCase;
 
-class MissingTemplateBlocksCheckerTest extends TestCase
+final class MissingTemplateBlocksCheckerTest extends TestCase
 {
     use ContainerTrait;
 
     /**
      * @dataProvider dataProviderCollectMissingTemplateBlockExtensions
      */
-    public function testCollectMissingTemplateBlockExtensions($templateExist, $blockExtensions, $result)
-    {
+    public function testCollectMissingTemplateBlockExtensions(
+        bool $templateExist,
+        array $blockExtensions,
+        array $result
+    ): void {
         $templateContent = '[{block name="block1"}][{/block}][{block name="block2"}][{/block}]';
 
         $missingTemplateBlockChecker = new MissingTemplateBlocksChecker(
@@ -39,7 +40,7 @@ class MissingTemplateBlocksCheckerTest extends TestCase
     /**
      * @return array
      */
-    public function dataProviderCollectMissingTemplateBlockExtensions()
+    public function dataProviderCollectMissingTemplateBlockExtensions(): array
     {
         $blockExtension = new TemplateBlockExtension();
         $blockExtension->setName('block1');
@@ -106,20 +107,20 @@ class MissingTemplateBlocksCheckerTest extends TestCase
         $templateLoader = $this->getMockBuilder(TemplateLoaderInterface::class)
             ->getMock();
         if ($templateExist) {
-            $templateLoader->expects($this->any())
+            $templateLoader
                 ->method('findTemplate')
                 ->with('testTemplateName')
-                ->will($this->returnValue($templateContent));
+                ->willReturn($templateContent);
         } else {
-            $templateLoader->expects($this->any())
+            $templateLoader
                 ->method('findTemplate')
                 ->with('testTemplateName')
                 ->willThrowException($this->get(TemplateFileNotFoundException::class));
         }
 
-        $templateLoader->expects($this->any())
+        $templateLoader
             ->method('getContext')
-            ->will($this->returnValue($templateContent));
+            ->willReturn($templateContent);
         return $templateLoader;
     }
 
@@ -127,9 +128,9 @@ class MissingTemplateBlocksCheckerTest extends TestCase
     {
         $shopAdapter = $this->getMockBuilder(ShopAdapterInterface::class)
             ->getMock();
-        $shopAdapter->expects($this->any())
+        $shopAdapter
             ->method('getActiveThemeId')
-            ->will($this->returnValue('testTheme'));
+            ->willReturn('testTheme');
         return $shopAdapter;
     }
 }

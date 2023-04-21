@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\Smarty\Tests\Integration\Module\TemplateExtension;
 
@@ -17,7 +17,7 @@ use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 /**
  * @internal
  */
-class TemplateBlockDaoTest extends IntegrationTestCase
+final class TemplateBlockDaoTest extends IntegrationTestCase
 {
     use ContainerTrait;
 
@@ -64,31 +64,42 @@ class TemplateBlockDaoTest extends IntegrationTestCase
 
     public function testGetExtensionsByTemplateNameOnlyModuleGiven(): void
     {
-        $blocks = $this->templateBlockDao->getExtensionsByTemplateName('shopTemplatePath', ['testModuleId', 'testModuleId2'], 1);
-        $this->assertEquals(1, count($blocks));
+        $blocks = $this->templateBlockDao
+            ->getExtensionsByTemplateName('shopTemplatePath', ['testModuleId', 'testModuleId2'], 1);
+
+        $this->assertCount(1, $blocks);
     }
 
     public function testGetExtensionsByTemplateNameModuleAndThemeGiven(): void
     {
-        $blocks = $this->templateBlockDao->getExtensionsByTemplateName('shopTemplatePath', ['testModuleId', 'testModuleId2'], 1, ['testThemeId', 'testThemeId2']);
-        $this->assertEquals(3, count($blocks));
+        $blocks = $this->templateBlockDao
+            ->getExtensionsByTemplateName(
+                'shopTemplatePath',
+                ['testModuleId', 'testModuleId2'],
+                1,
+                ['testThemeId', 'testThemeId2']
+            );
+
+        $this->assertCount(3, $blocks);
     }
 
     public function testGetExtensionsByTheme(): void
     {
         $blocks = $this->templateBlockDao->getExtensionsByTheme(1, ['testThemeId', 'testThemeId2']);
-        $this->assertEquals(4, count($blocks));
+
+        $this->assertCount(4, $blocks);
     }
 
     public function testGetExtensionsByThemeNonGiven(): void
     {
         $blocks = $this->templateBlockDao->getExtensionsByTheme(1);
-        $this->assertEquals(1, count($blocks));
+
+        $this->assertCount(1, $blocks);
     }
 
     public function testExistExtension(): void
     {
-        $this->assertTrue($this->templateBlockDao->exists( ['testModuleId', 'testModuleId2'], 1));
+        $this->assertTrue($this->templateBlockDao->exists(['testModuleId', 'testModuleId2'], 1));
     }
 
     public function testDoesNotExistExtension(): void

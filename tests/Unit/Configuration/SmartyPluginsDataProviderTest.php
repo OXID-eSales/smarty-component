@@ -10,15 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartyPluginsDataProvider;
-use OxidEsales\Smarty\SmartyContextInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
+use PHPUnit\Framework\TestCase;
 
-class SmartyPluginsDataProviderTest extends \PHPUnit\Framework\TestCase
+final class SmartyPluginsDataProviderTest extends TestCase
 {
-    public function testGetConfigurationWithSecuritySettingsOff()
+    public function testGetConfigurationWithSecuritySettingsOff(): void
     {
         $settings = (new SmartyPluginsDataProvider())->getPlugins();
 
-        $this->assertTrue(file_exists($settings[0] . DIRECTORY_SEPARATOR . 'function.oxcontent.php'));
+        $this->assertFileExists($settings[0] . DIRECTORY_SEPARATOR . 'function.oxcontent.php');
     }
 }

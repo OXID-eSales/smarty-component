@@ -16,26 +16,26 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Service\ModuleActi
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\ContainerTrait;
+use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\Smarty\Module\Template\ActiveModuleTemplateDataProvider;
 use OxidEsales\Smarty\Module\Template\Template;
 use OxidEsales\Smarty\Module\Template\TemplateDaoInterface;
-use PHPUnit\Framework\TestCase;
 
-final class ActiveModuleTemplateDataProviderTest extends TestCase
+final class ActiveModuleTemplateDataProviderTest extends IntegrationTestCase
 {
     use ContainerTrait;
 
-    private $activeModuleId = 'activeModuleId';
-    private $activeModulePath = 'some-path-active';
-    private $activeModuleSource = 'some-source-active';
-    private $inactiveModuleId = 'inActiveModuleId';
-    private $inactiveModulePath = 'some-path-inactive';
-    private $inactiveModuleSource = 'some-source-inactive';
-    private $moduleConfiguration;
+    private string $activeModuleId = 'activeModuleId';
+    private string $activeModulePath = 'some-path-active';
+    private string $activeModuleSource = 'some-source-active';
+    private string $inactiveModuleId = 'inActiveModuleId';
+    private string $inactiveModulePath = 'some-path-inactive';
+    private string $inactiveModuleSource = 'some-source-inactive';
+    private ModuleConfigurationDaoInterface $moduleConfigurationDao;
 
     private BasicContext $context;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -43,7 +43,7 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
         $this->prepareTestShopConfiguration();
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         $this->cleanUpTestData();
 
@@ -53,7 +53,7 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
     public function testGetTemplates(): void
     {
         $dataProvider = new ActiveModuleTemplateDataProvider(
-            $this->moduleConfiguration,
+            $this->moduleConfigurationDao,
             $this->get(TemplateDaoInterface::class),
             $this->get(ContextInterface::class),
             $this->getDummyCache()
@@ -110,21 +110,31 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
             ->setModuleSource($this->inactiveModuleSource);
 
         $templateDao = $this->get(TemplateDaoInterface::class);
-        $templateDao->add(['activeTemplate' => 'activeTemplatePath'], $this->activeModuleId, $this->context->getDefaultShopId());
-        $templateDao->add(['inactiveTemplate' => 'inactiveTemplatePath'], $this->inactiveModuleId, $this->context->getDefaultShopId());
+        $templateDao->add(
+            ['activeTemplate' => 'activeTemplatePath'],
+            $this->activeModuleId,
+            $this->context->getDefaultShopId()
+        );
+        $templateDao->add(
+            ['inactiveTemplate' => 'inactiveTemplatePath'],
+            $this->inactiveModuleId,
+            $this->context->getDefaultShopId()
+        );
 
-        $this->moduleConfiguration = $this->get(ModuleConfigurationDaoInterface::class);
-        $this->moduleConfiguration->save($activeModule, $this->context->getDefaultShopId());
-        $this->moduleConfiguration->save($inactiveModule, $this->context->getDefaultShopId());
+        $this->moduleConfigurationDao = $this->get(ModuleConfigurationDaoInterface::class);
+        $this->moduleConfigurationDao->save($activeModule, $this->context->getDefaultShopId());
+        $this->moduleConfigurationDao->save($inactiveModule, $this->context->getDefaultShopId());
     }
 
     private function cleanUpTestData(): void
     {
-        $this->get(ModuleActivationServiceInterface::class)->deactivate($this->activeModuleId, $this->context->getDefaultShopId());
+        $this->get(ModuleActivationServiceInterface::class)
+            ->deactivate($this->activeModuleId, $this->context->getDefaultShopId());
     }
 
-    private function getActiveModulesDataProviderWithCache(ModuleCacheServiceInterface $cache): ActiveModuleTemplateDataProvider
-    {
+    private function getActiveModulesDataProviderWithCache(
+        ModuleCacheServiceInterface $cache
+    ): ActiveModuleTemplateDataProvider {
         return new ActiveModuleTemplateDataProvider(
             $this->get(ModuleConfigurationDaoInterface::class),
             $this->get(TemplateDaoInterface::class),
@@ -136,7 +146,7 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
     private function getDummyCache(): ModuleCacheServiceInterface
     {
         return new class implements ModuleCacheServiceInterface {
-            private $cache;
+            private array $cache;
 
             public function invalidate(string $moduleId, int $shopId): void
             {
@@ -159,7 +169,6 @@ final class ActiveModuleTemplateDataProviderTest extends TestCase
 
             public function invalidateAll(): void
             {
-                // TODO: Implement invalidateAll() method.
             }
         };
     }

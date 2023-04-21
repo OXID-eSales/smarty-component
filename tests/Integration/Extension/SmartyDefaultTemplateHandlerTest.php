@@ -11,12 +11,14 @@ namespace OxidEsales\Smarty\Tests\Integration\Extension;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\FileLocatorInterface;
 use OxidEsales\Smarty\Extension\SmartyDefaultTemplateHandler;
+use PHPUnit\Framework\TestCase;
+use Smarty;
 
-class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
+final class SmartyDefaultTemplateHandlerTest extends TestCase
 {
-    private $resourceName = 'smartyTemplate.tpl';
-    private $resourceContent = "The new contents of the file";
-    private $resourceTimeStamp = 1;
+    private string $resourceName = 'smartyTemplate.tpl';
+    private string $resourceContent = 'The new contents of the file';
+    private int $resourceTimeStamp = 1;
 
     /**
      * If it is not template file or it is not valid,
@@ -27,13 +29,15 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
      * @param string $resourceType  The Type of the given file.
      * @param mixed  $givenResource The template to test.
      */
-    public function testSmartyDefaultTemplateHandlerWithoutExistingFile($resourceType, $givenResource)
-    {
+    public function testSmartyDefaultTemplateHandlerWithoutExistingFile(
+        string $resourceType,
+        string $givenResource
+    ): void {
         $resourceName = $this->resourceName;
         $resourceContent = $this->resourceContent;
         $resourceTimestamp = $this->resourceTimeStamp;
 
-        $smarty = new \Smarty();
+        $smarty = new Smarty();
         $smarty->left_delimiter = '[{';
         $smarty->right_delimiter = '}]';
 
@@ -51,7 +55,7 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->resourceTimeStamp, $resourceTimestamp);
     }
 
-    public function smartyDefaultTemplateHandlerDataProvider()
+    public function smartyDefaultTemplateHandlerDataProvider(): array
     {
         return [
             ['content', $this->resourceName],
@@ -60,13 +64,13 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testSmartyDefaultTemplateHandler()
+    public function testSmartyDefaultTemplateHandler(): void
     {
         $resourceName = $this->resourceName;
         $resourceContent = $this->resourceContent;
         $resourceTimestamp = $this->resourceTimeStamp;
 
-        $smarty = new \Smarty();
+        $smarty = new Smarty();
         $smarty->left_delimiter = '[{';
         $smarty->right_delimiter = '}]';
 
@@ -87,7 +91,7 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(filemtime($template), $resourceTimestamp);
     }
 
-    private function getSmartyDefaultTemplateHandler($template)
+    private function getSmartyDefaultTemplateHandler(string $template): SmartyDefaultTemplateHandler
     {
         $locator = $this
         ->getMockBuilder(FileLocatorInterface::class)
@@ -100,7 +104,7 @@ class SmartyDefaultTemplateHandlerTest extends \PHPUnit\Framework\TestCase
         return new SmartyDefaultTemplateHandler($locator);
     }
 
-    private function getTemplateDirectory()
+    private function getTemplateDirectory(): string
     {
         return __DIR__ . '/../Fixtures/';
     }

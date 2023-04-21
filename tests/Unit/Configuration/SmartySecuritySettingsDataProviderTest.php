@@ -11,18 +11,18 @@ namespace OxidEsales\Smarty\Tests\Unit\Configuration;
 
 use OxidEsales\Smarty\Configuration\SmartySecuritySettingsDataProvider;
 use OxidEsales\Smarty\Resolver\TemplateDirectoryResolverInterface;
-use OxidEsales\Smarty\SmartyContextInterface;
 use PHPUnit\Framework\TestCase;
+use Smarty;
 
-class SmartySecuritySettingsDataProviderTest extends TestCase
+final class SmartySecuritySettingsDataProviderTest extends TestCase
 {
     public function setUp(): void
     {
         parent::setUp();
-        new \Smarty(); // Initalize constants
+        new Smarty();
     }
 
-    public function testGetSecuritySettings()
+    public function testGetSecuritySettings(): void
     {
         $dataProvider = new SmartySecuritySettingsDataProvider($this->getTemplateDirectoryResolverMock());
         $settings = [

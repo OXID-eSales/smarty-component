@@ -32,7 +32,8 @@ final class ShopConfigurationSmartyPluginDirectoryHandlerTest extends Integratio
         $configurationDao = $this->get(ModuleConfigurationDaoInterface::class);
         $moduleConfiguration = $configurationDao->get('test-module', 1);
 
-        $settingHandler = $this->get('oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler');
+        $settingHandler = $this
+            ->get('oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler');
         $settingHandler->handleOnModuleActivation(
             $moduleConfiguration,
             1
@@ -50,7 +51,8 @@ final class ShopConfigurationSmartyPluginDirectoryHandlerTest extends Integratio
         $configurationDao = $this->get(ModuleConfigurationDaoInterface::class);
         $moduleConfiguration = $configurationDao->get('test-module', 1);
 
-        $settingHandler = $this->get('oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler');
+        $settingHandler = $this
+            ->get('oxid_esales.smarty.module.setup.smarty_plugin_directories_module_setting_handler');
         $settingHandler->handleOnModuleActivation(
             $moduleConfiguration,
             1

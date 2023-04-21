@@ -15,12 +15,12 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\FileLocatorI
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\Resolver\TemplateFileResolverInterface;
 use PHPUnit\Framework\TestCase;
 
-class TemplateLoaderTest extends TestCase
+final class TemplateLoaderTest extends TestCase
 {
     public function testGetContext(): void
     {
         $name = 'testSmartyTemplate.tpl';
-        $context = "The new contents of the file";
+        $context = 'The new contents of the file';
         $templateDir = vfsStream::setup('testTemplateDir');
         $template = vfsStream::newFile($name)
             ->at($templateDir)
@@ -34,15 +34,10 @@ class TemplateLoaderTest extends TestCase
         $this->assertSame($context, $loader->getContext($template));
     }
 
-    /**
-     * @param $path
-     *
-     * @return FileLocatorInterface
-     */
-    private function getFileLocatorMock($path): FileLocatorInterface
+    private function getFileLocatorMock(string $path): FileLocatorInterface
     {
         $locator = $this
-            ->getMockBuilder('OxidEsales\EshopCommunity\Internal\Framework\Templating\Locator\FileLocatorInterface')
+            ->getMockBuilder(FileLocatorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -52,12 +47,7 @@ class TemplateLoaderTest extends TestCase
         return $locator;
     }
 
-    /**
-     * @param $path
-     *
-     * @return TemplateFileResolverInterface
-     */
-    private function getTemplateFileResolverMock($name): TemplateFileResolverInterface
+    private function getTemplateFileResolverMock(string $name): TemplateFileResolverInterface
     {
         $locator = $this
             ->getMockBuilder(TemplateFileResolverInterface::class)

@@ -16,10 +16,11 @@ use OxidEsales\Smarty\Configuration\SmartySecuritySettingsDataProviderInterface;
 use OxidEsales\Smarty\Configuration\SmartySettingsDataProviderInterface;
 use OxidEsales\Smarty\SmartyContextInterface;
 use OxidEsales\Smarty\Configuration\SmartyConfigurationFactory;
+use PHPUnit\Framework\TestCase;
 
-class SmartyConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
+final class SmartyConfigurationFactoryTest extends TestCase
 {
-    public function testGetConfigurationWithSecuritySettingsOff()
+    public function testGetConfigurationWithSecuritySettingsOff(): void
     {
         $factory = new SmartyConfigurationFactory(
             $this->getSmartyContextMock(false),
@@ -38,7 +39,7 @@ class SmartyConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['testPrefilters'], $configuration->getPrefilters());
     }
 
-    public function testGetConfigurationWithSecuritySettingsOn()
+    public function testGetConfigurationWithSecuritySettingsOn(): void
     {
         $factory = new SmartyConfigurationFactory(
             $this->getSmartyContextMock(true),
@@ -57,7 +58,7 @@ class SmartyConfigurationFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['testPrefilters'], $configuration->getPrefilters());
     }
 
-    private function getSmartyContextMock($securityMode = false): SmartyContextInterface
+    private function getSmartyContextMock(bool $securityMode): SmartyContextInterface
     {
         $smartyContextMock = $this
             ->getMockBuilder(SmartyContextInterface::class)

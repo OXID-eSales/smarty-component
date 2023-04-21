@@ -5,19 +5,15 @@
  * See LICENSE file for license details.
  */
 
-/**
- * Metadata version
- */
+declare(strict_types=1);
+
 $sMetadataVersion = '2.1';
 
-/**
- * Module information
- */
-$aModule = array(
+$aModule = [
     'id'          => 'testModule',
     'title'       => 'testModule',
     'description' => 'testModule',
     'thumbnail'   => 'picture.png',
     'version'     => '1.0',
     'author'      => 'OXID eSales AG'
-);
+];
