@@ -1,0 +1,125 @@
+name: Testing with OXID eShop-CE
+
+on:
+  push:
+    branches:
+      - b-7.0.x
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  run_tests:
+    strategy:
+      matrix:
+        php: [ '8.1' ]
+        mysql: [ '8.0' ]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    env:
+      ESHOP_DOCKER_SDK_REPOSITORY: https://github.com/OXID-eSales/docker-eshop-sdk.git
+      SHOP_CE_REPOSITORY: https://github.com/OXID-eSales/oxideshop_ce.git
+      SHOP_CE_DEFAULT_BRANCH: b-7.0.x
+      SHOP_INSTALL_DIR: eshop_ce
+      DOCKER_SETUP_DIR: source
+    steps:
+      - name: Add environment variables
+        run: |
+          SHOP_ROOT_DIR="/var/www/$SHOP_INSTALL_DIR"
+          RUN_PHP="docker-compose run -T -w $SHOP_ROOT_DIR php"
+          echo "SHOP_ROOT_DIR=$SHOP_ROOT_DIR" >> $GITHUB_ENV
+          echo "RUN_PHP=$RUN_PHP" >> $GITHUB_ENV
+
+      - name: Clone Docker Eshop SDK
+        run: |
+          git clone --depth 1 $ESHOP_DOCKER_SDK_REPOSITORY --branch master --single-branch .
+
+      - name: Define eShop-CE branch for cloning
+        run: |
+          if [[ $(git ls-remote --heads $SHOP_CE_REPOSITORY ${{ github.ref_name }}) ]]; then
+            SHOP_CE_BRANCH=${{ github.ref_name }};
+          else
+            SHOP_CE_BRANCH=$SHOP_CE_DEFAULT_BRANCH;
+          fi
+          echo "SHOP_CE_BRANCH=$SHOP_CE_BRANCH" >> $GITHUB_ENV
+
+      - name: Clone the shop
+        run: |
+          git clone --depth 1 $SHOP_CE_REPOSITORY --branch $SHOP_CE_BRANCH --single-branch $DOCKER_SETUP_DIR/$SHOP_INSTALL_DIR
+
+      - name: Prepare container configuration
+        run: |
+          make setup
+          make addbasicservices
+          perl -pi\
+              -e "s#PHP_VERSION=.*#PHP_VERSION='${{ matrix.php }}'#g;"\
+              -e "s#MYSQL_VERSION=.*#MYSQL_VERSION='${{ matrix.mysql }}'#g;"\
+              .env
+          perl -pi\
+              -e 's#display_errors =.*#display_errors = false#g;'\
+              -e 'print "xdebug.max_nesting_level=1000\n\n";'\
+              -e 'print "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING\n"'\
+              containers/php/custom.ini
+          perl -pi\
+              -e 's#/var/www/#$SHOP_ROOT_DIR/source/#g;'\
+              containers/httpd/project.conf
+
+      - name: Start containers
+        run: |
+          make up
+
+      - name: Require the component (${{ github.ref_name }})
+        run: |
+          $RUN_PHP \
+            composer require oxid-esales/smarty-component:dev-${{ github.ref_name }} --no-update
+
+      - name: Require wave-theme
+        run: |
+          $RUN_PHP \
+            composer require oxid-esales/wave-theme --no-update
+
+      - name: Require developer-tools
+        run: |
+          $RUN_PHP \
+            composer require oxid-esales/developer-tools --no-update
+
+      - name: Run Composer install
+        run: |
+          $RUN_PHP \
+            composer install --no-interaction
+
+      - name: Run Install Shop
+        run: |
+          $RUN_PHP \
+            cp source/config.inc.php.dist source/config.inc.php
+          $RUN_PHP \
+            bin/oe-console oe:setup:shop --db-host mysql --db-port 3306 --db-name example --db-user root --db-password root --shop-url localhost.localhost --shop-directory $SHOP_ROOT_DIR/source/ --compile-directory $SHOP_ROOT_DIR/source/tmp/
+
+      - name: Run reset database
+        run: |
+          $RUN_PHP \
+            php bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
+
+      - name: Run activate theme
+        run: |
+          $RUN_PHP \
+            php bin/oe-console oe:theme:activate wave
+
+      - name: Run component tests
+        # Put PHPUnit logs to the eShop log folder
+        run: |
+          $RUN_PHP \
+            php vendor/bin/phpunit --configuration phpunit.xml --bootstrap /var/www/tests/bootstrap.php vendor/oxid-esales/smarty-component/tests --testdox-text source/log/phpunit_log.txt
+
+      - name: Upload logged artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: eshop_source_log_folder
+          path: ${{ env.DOCKER_SETUP_DIR }}/${{ env.SHOP_INSTALL_DIR }}/source/log/
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Stop containers
+        run: |
+          make down
