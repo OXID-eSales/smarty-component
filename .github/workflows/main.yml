@@ -110,7 +110,11 @@ jobs:
         # Put PHPUnit logs to the eShop log folder
         run: |
           $RUN_PHP \
-            php vendor/bin/phpunit --configuration phpunit.xml --bootstrap /var/www/tests/bootstrap.php vendor/oxid-esales/smarty-component/tests --testdox-text source/log/phpunit_log.txt
+            php vendor/bin/phpunit \
+          --configuration phpunit.xml \
+          --bootstrap /var/www/${{ env.SHOP_INSTALL_DIR }}/tests/bootstrap.php \
+          vendor/oxid-esales/smarty-component/tests \
+          --testdox-text source/log/phpunit_log.txt
 
       - name: Upload logged artifacts
         uses: actions/upload-artifact@v3
