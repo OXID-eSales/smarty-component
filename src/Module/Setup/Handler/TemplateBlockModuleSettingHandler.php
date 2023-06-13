@@ -25,9 +25,7 @@ class TemplateBlockModuleSettingHandler implements ModuleConfigurationHandlerInt
 
     public function handleOnModuleActivation(ModuleConfiguration $configuration, int $shopId): void
     {
-        if ($this->templateBlockExtensionDao->exists([$configuration->getId()], $shopId)) {
-            return;
-        }
+        $this->cleanupBlocks($configuration, $shopId);
 
         $metadata = $this->metaDataDao->get($this->metadataResolver->getFullModulePathFromConfiguration($configuration->getId(), $shopId));
         $data = $metadata['moduleData'];
@@ -44,9 +42,7 @@ class TemplateBlockModuleSettingHandler implements ModuleConfigurationHandlerInt
 
     public function handleOnModuleDeactivation(ModuleConfiguration $configuration, int $shopId): void
     {
-        if ($this->templateBlockExtensionDao->exists([$configuration->getId()], $shopId)) {
-            $this->templateBlockExtensionDao->deleteExtensions($configuration->getId(), $shopId);
-        }
+        $this->cleanupBlocks($configuration, $shopId);
     }
 
     private function mapDataToObject(array $templateBlock): TemplateBlockExtension
@@ -70,5 +66,12 @@ class TemplateBlockModuleSettingHandler implements ModuleConfigurationHandlerInt
         }
 
         return $templateBlockExtension;
+    }
+
+    private function cleanupBlocks(ModuleConfiguration $configuration, int $shopId): void
+    {
+        if ($this->templateBlockExtensionDao->exists([$configuration->getId()], $shopId)) {
+            $this->templateBlockExtensionDao->deleteExtensions($configuration->getId(), $shopId);
+        }
     }
 }
