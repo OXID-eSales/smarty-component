@@ -48,6 +48,28 @@ final class TemplateBlockModuleSettingHandlerTest extends IntegrationTestCase
         );
     }
 
+    public function testHandlingOnAlreadyActivatedModule(): void
+    {
+        $configurationDao = $this->get(ModuleConfigurationDaoInterface::class);
+        $moduleConfiguration = $configurationDao->get('test-module', 1);
+
+        $settingHandler = $this->get('oxid_esales.smarty.module.setup.template_block_module_setting_handler');
+        $templateBlockDao = $this->get(TemplateBlockExtensionDaoInterface::class);
+
+        $settingHandler->handleOnModuleActivation($moduleConfiguration, 1);
+        $this->assertTrue($templateBlockDao->exists(['test-module'], 1));
+        $settingHandler->handleOnModuleActivation($moduleConfiguration, 1);
+
+        $this->assertCount(
+            1,
+            $templateBlockDao->getExtensionsByTemplateName('template_1.tpl', ['test-module'], 1, ['theme_id'])
+        );
+        $this->assertCount(
+            1,
+            $templateBlockDao->getExtensionsByTemplateName('template_2.tpl', ['test-module'], 1)
+        );
+    }
+
     public function testHandlingOnModuleDeactivation(): void
     {
         $configurationDao = $this->get(ModuleConfigurationDaoInterface::class);

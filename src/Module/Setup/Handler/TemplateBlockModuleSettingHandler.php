@@ -25,6 +25,10 @@ class TemplateBlockModuleSettingHandler implements ModuleConfigurationHandlerInt
 
     public function handleOnModuleActivation(ModuleConfiguration $configuration, int $shopId): void
     {
+        if ($this->templateBlockExtensionDao->exists([$configuration->getId()], $shopId)) {
+            return;
+        }
+
         $metadata = $this->metaDataDao->get($this->metadataResolver->getFullModulePathFromConfiguration($configuration->getId(), $shopId));
         $data = $metadata['moduleData'];
         if (isset($data['blocks'])) {
