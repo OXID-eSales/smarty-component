@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Template blocks for modules are added again on activation, even when they were already added
+- Catch and log broken cms content in related plugin
 
 ## [v1.0.0] - 2023-04-26
 
