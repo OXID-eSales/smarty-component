@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v1.0.1] - Unreleased
+## [v1.0.1] - 2024-12-02
 
 ### Fixed
 - Template blocks for modules are added again on activation, even when they were already added
